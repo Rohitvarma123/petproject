@@ -65,7 +65,7 @@ jobs:
            
       - name: Build and Deploy to Tomcat
         run: |
-          mvn clean package tomcat7:redeploy -s $HOME/.m2/settings.xml
+          mvn clean package tomcat9:redeploy -s $HOME/.m2/settings.xml
 
         
 
