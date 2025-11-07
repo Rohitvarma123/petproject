@@ -63,5 +63,4 @@ jobs:
           echo "Deploying to $NEXUS_URL"
           mvn deploy \
             -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
-            -Dnexus.username=${NEXUS_USERNAME} \
-            -Dnexus.password=${NEXUS_PASSWORD}
+            -s $HOME/.m2/settings.xml
