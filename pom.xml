@@ -546,17 +546,16 @@
    </profiles>
          <distributionManagement>
     <repository>
-      <id>nexus-releases</id>
+      <id>nexus</id>
       <name>Nexus Release Repository</name>
-      <url>http://52.87.251.140:8081/repository/maven-releases/</url>
+      <url>http://43.207.29.130:8081/repository/maven-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus-snapshots</id>
+      <id>nexus</id>
       <name>Nexus Snapshot Repository</name>
-      <url>http://52.87.251.140:8081/repository/maven-snapshots/</url>
+      <url>http://43.207.29.130:8081/repository/maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
     <repositories>
         <repository>
             <id>repository.spring.milestone</id>
