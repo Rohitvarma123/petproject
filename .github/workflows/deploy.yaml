@@ -60,7 +60,6 @@ jobs:
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           NEXUS_URL: ${{ env.repo_url }}
         run: |
-          echo "Deploying to $NEXUS_URL"
-          mvn deploy \
-            -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
-            -s $HOME/.m2/settings.xml
+           echo "Deploying to $NEXUS_URL"
+           mvn deploy -s $HOME/.m2/settings.xml
+
