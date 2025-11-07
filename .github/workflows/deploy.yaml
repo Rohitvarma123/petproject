@@ -37,19 +37,27 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Configure Maven settings
-        run: |
-          mkdir -p $HOME/.m2
-          cat > $HOME/.m2/settings.xml <<EOL
-          <settings>
-            <servers>
-              <server>
-                <id>nexus</id>
-                <username>${{ secrets.NEXUS_USERNAME }}</username>
-                <password>${{ secrets.NEXUS_PASSWORD }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOL
+  run: |
+    mkdir -p $HOME/.m2
+    cat > $HOME/.m2/settings.xml <<EOL
+    <settings>
+      <servers>
+        <server>
+          <id>nexus</id>
+          <username>${{ secrets.NEXUS_USERNAME }}</username>
+          <password>${{ secrets.NEXUS_PASSWORD }}</password>
+        </server>
+
+        <!-- Tomcat server credentials -->
+        <server>
+          <id>TomcatServer</id>
+          <username>deployer</username>
+          <password>deployer</password>
+        </server>
+      </servers>
+    </settings>
+    EOL
+
 
       - name: Detect version type
         id: version_check
