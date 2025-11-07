@@ -21,6 +21,14 @@ jobs:
           server-id: nexus
           server-username: NEXUS_USERNAME
           server-password: NEXUS_PASSWORD
+          
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Validate Maven project
         run: mvn validate
@@ -63,9 +71,8 @@ jobs:
            echo "Deploying to $NEXUS_URL"
            mvn deploy -s $HOME/.m2/settings.xml
            
-      - name: Build and Deploy to Tomcat
-        run: |
-          mvn clean package tomcat9:redeploy -s $HOME/.m2/settings.xml
+      - name: Deploy to Tomcat9
+        run: mvn tomcat9:redeploy --settings .github/maven/settings.xml
 
         
 
