@@ -544,9 +544,6 @@
             </dependencies>
         </profile>
    </profiles>
-<properties>
-        <nexus.host.url>http://43.207.29.130:8081</nexus.host.url>
-    </properties>
          <distributionManagement>
     <repository>
       <id>nexus</id>
