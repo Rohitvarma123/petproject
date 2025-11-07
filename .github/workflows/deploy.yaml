@@ -70,6 +70,7 @@ jobs:
         run: |
            echo "Deploying to $NEXUS_URL"
            mvn deploy -s $HOME/.m2/settings.xml
+
            
       - name: Deploy to Tomcat9
             mvn clean package tomcat7:redeploy -s $HOME/.m2/settings.xml
