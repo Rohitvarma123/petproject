@@ -72,7 +72,7 @@ jobs:
            mvn deploy -s $HOME/.m2/settings.xml
            
       - name: Deploy to Tomcat9
-        run: mvn tomcat9:redeploy --settings .github/maven/settings.xml
+            mvn clean package tomcat7:redeploy -s $HOME/.m2/settings.xml
 
         
 
