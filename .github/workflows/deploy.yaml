@@ -1,91 +1,48 @@
-name: Build and Deploy to Nexus
+name: CI/CD Pipeline with SonarQube
 
 on:
   push:
     branches:
       - master
 
+  pull_request:
+    branches:
+      - master
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+
+      - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          server-id: nexus
-          server-username: NEXUS_USERNAME
-          server-password: NEXUS_PASSWORD
-          
-      - name: Cache Maven packages
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Maven Packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-m2
 
-      - name: Validate Maven project
-        run: mvn validate
+      - name: Build Project
+        run: mvn clean verify
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
-
-      - name: Configure Maven settings
-  run: |
-    mkdir -p $HOME/.m2
-    cat > $HOME/.m2/settings.xml <<EOL
-    <settings>
-      <servers>
-        <server>
-          <id>nexus</id>
-          <username>${{ secrets.NEXUS_USERNAME }}</username>
-          <password>${{ secrets.NEXUS_PASSWORD }}</password>
-        </server>
-
-        <!-- Tomcat server credentials -->
-        <server>
-          <id>TomcatServer</id>
-          <username>deployer</username>
-          <password>deployer</password>
-        </server>
-      </servers>
-    </settings>
-    EOL
-
-
-      - name: Detect version type
-        id: version_check
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Project version: $VERSION"
-          if [[ "$VERSION" == *"-SNAPSHOT" ]]; then
-            echo "repo_url=${{ secrets.NEXUS_SNAPSHOTS_URL }}" >> $GITHUB_ENV
-          else
-            echo "repo_url=${{ secrets.NEXUS_RELEASE_URL }}" >> $GITHUB_ENV
-          fi
-
-      - name: Deploy to Nexus
+      - name: SonarQube Scan
         env:
-          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          NEXUS_URL: ${{ env.repo_url }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-           echo "Deploying to $NEXUS_URL"
-           mvn deploy -s $HOME/.m2/settings.xml
-
-
-
-           
-
-           
-      - name: Deploy to Tomcat9
-            mvn clean package tomcat7:redeploy -s $HOME/.m2/settings.xml
-
-        
-
+          mvn sonar:sonar \
+          -Dsonar.projectKey=petclinic \
+          -Dsonar.projectName=petclinic \
+          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.login=$SONAR_TOKEN
