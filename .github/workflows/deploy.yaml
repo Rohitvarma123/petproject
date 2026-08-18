@@ -1,8 +1,8 @@
-name: Every Minute Build
+name: Periodic Build
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '*/5 * * * *'
 
   workflow_dispatch:
 
@@ -16,7 +16,3 @@ jobs:
 
       - name: Build
         run: echo "Build started"
-
-
-
-        
